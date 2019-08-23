@@ -2,22 +2,22 @@
     <div class="container">
         <el-card class="mycard">
             <img src="../../assets/images/logo_index.png" alt="">
-        <el-form ref="form" :model="loginform">
-            <el-form-item>
-                <el-input v-model="loginform.mobile" placeholder="请输入手机号"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-input v-model="loginform.code" placeholder="请输入6位数验证码" style="width:236px;margin-right:10px;" ></el-input>
-                <el-button type="success">获取验证码</el-button>
-            </el-form-item>
-             <el-form-item>
-                <el-checkbox :value="true">我已阅读并同意用户协议和隐私条款</el-checkbox>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" style="width:100%">登 录</el-button>
-            </el-form-item>
+            <el-form ref="loginForm" :model="loginForm" :rules='loginRules'>
+                <el-form-item prop="mobile">
+                    <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
+                </el-form-item>
+                <el-form-item prop="code">
+                    <el-input v-model="loginForm.code" placeholder="请输入6位数验证码" style="width:236px;margin-right:10px;" ></el-input>
+                    <el-button type="success">获取验证码</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-checkbox :value="true">我已阅读并同意用户协议和隐私条款</el-checkbox>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="login()" type="primary" style="width:100%">登 录</el-button>
+                </el-form-item>
 
-        </el-form>
+            </el-form>
         </el-card>
 
     </div>
@@ -25,16 +25,46 @@
 
 <script>
 export default {
-  props: {
 
-  },
   data () {
+    const checkMobile = (rule, value, callback) => {
+      // 实现校验逻辑
+      // 是否符合手机号格式: 第一位数1 第二位数3-9 其余随机数字
+      if (!/^1[3-9]\d{9}$/.test(value)) {
+        return callback(new Error('手机号不合法'))
+      }
+      callback()
+    }
+    // const checkMobile = (rule, value, callback) => {
+    //   // 实现校验逻辑
+    //   // 是否是合法手机号：第一位数字 只能1 第二位数字 3-9 其余9位数字结尾 即可
+    //   if (!/^1[3-9]\d{9}$/.test(value)) {
+    //     return callback(new Error('手机号不合法'))
+    //   }
+    //   callback()
+    // }
     return {
-      loginform: {
+      loginForm: {
         mobile: '',
         code: ''
+      },
+      //   表单校验规则的对象
+      loginRules: {
+        mobile: [
+          // 给字段加简单校验规则(可以多个)
+          // 1.required不能为空  2.message错误提示信息  3.trigger触发方式
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'change' }
+        ],
+        code: [
+          { required: true, message: '请输入6位数验证码', trigger: 'blur' },
+          { len: 6, message: '验证码长度为6位数', trigger: 'blur' }
+        ]
       }
     }
+  },
+  props: {
+
   },
   computed: {
 
@@ -49,7 +79,22 @@ export default {
 
   },
   methods: {
-
+    login () {
+      // 调用validate对整体进行校验
+      // console.log(this.$message)
+      this.$refs.loginForm.validate((valid) => {
+        if (valid) {
+          // 校验成功 调用登录接口
+          this.$http.post('http://ttapi.research.itcast.cn/mp/v1_0/authorizations', this.loginForm)
+            .then((res) => {
+              this.$router.push('/hm')
+            })
+            .catch(() => {
+              this.$message.error('手机或是验证码出错')
+            })
+        }
+      })
+    }
   },
   components: {
 
