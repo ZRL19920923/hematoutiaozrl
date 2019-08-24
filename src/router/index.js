@@ -6,6 +6,8 @@ import Login from '@/views/login'
 import Home from '@/views/home'
 // 引入二级业务组件
 import Welcome from '@/views/welcome'
+// 引入404页面
+import Notfound from '@/views/404'
 // 注册路由
 Vue.use(VueRouter)
 
@@ -20,7 +22,8 @@ const router = new VueRouter({
       component: Home,
       children: [
         { path: '/hm/wc', name: 'welcome', component: Welcome }
-      ] }
+      ] },
+    { path: '*', component: Notfound }
   ]
 })
 // 导出路由~
