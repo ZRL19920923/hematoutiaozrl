@@ -22,6 +22,12 @@ const router = new VueRouter({
       component: Home,
       children: [
         { path: '/hm/wc', name: 'welcome', component: Welcome }
+        // { path: '/hm/article', name: 'article', component: Article },
+        // { path: '/hm/image', name: 'image', component: Image },
+        // { path: '/hm/publish', name: 'publish', component: Publish },
+        // { path: '/hm/comment', name: 'acomment', component: Comment },
+        // { path: '/hm/fans', name: 'fans', component: Fans },
+        // { path: '/hm/setting', name: 'setting', component: Setting }
       ] },
     { path: '*', component: Notfound }
   ]

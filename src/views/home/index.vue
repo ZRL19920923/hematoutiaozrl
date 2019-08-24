@@ -1,7 +1,7 @@
 <template>
   <el-container class="mycontainer">
-    <el-aside width="200px" class="myaside">
-      <div class="logo"></div>
+    <el-aside :width="isCollapse?'64px':'200px'" class="myaside">
+      <div class="logo" :class="{minilogo:isCollapse}"></div>
           <el-menu
             default-active="2"
             class="el-menu-vertical-demo"
@@ -10,34 +10,36 @@
             background-color="#002033"
             text-color="#fff"
             active-text-color="#ffd04b"
+            :collapse="isCollapse"
+            :collapse-transition= "false"
           >
-            <el-submenu index="1">
+            <el-submenu index="/">
               <template slot="title">
                 <i class="el-icon-s-home"></i>
                 <span>首页</span>
               </template>
             </el-submenu>
-            <el-menu-item index="2">
+            <el-menu-item index="/article">
               <i class="el-icon-document"></i>
               <span slot="title">内容管理</span>
             </el-menu-item>
-            <el-menu-item index="3">
+            <el-menu-item index="/image">
               <i class="el-icon-picture"></i>
               <span slot="title">素材管理</span>
             </el-menu-item>
-            <el-menu-item index="4">
+            <el-menu-item index="/publish">
               <i class="el-icon-s-promotion"></i>
               <span slot="title">发布文章</span>
             </el-menu-item>
-             <el-menu-item index="5">
+             <el-menu-item index="/comment">
               <i class="el-icon-chat-dot-round"></i>
               <span slot="title">评论管理</span>
             </el-menu-item>
-             <el-menu-item index="6">
+             <el-menu-item index="/fans">
               <i class="el-icon-present"></i>
               <span slot="title">粉丝管理</span>
             </el-menu-item>
-             <el-menu-item index="7">
+             <el-menu-item index="/setting">
               <i class="el-icon-setting"></i>
               <span slot="title">个人设置</span>
             </el-menu-item>
@@ -45,7 +47,7 @@
     </el-aside>
     <el-container>
       <el-header>
-        <span class="el-icon-s-fold icon"></span>
+        <span class="el-icon-s-fold icon" @click="roll()"></span>
         <span class="test">江苏传智播客科技教育有限公司</span>
         <div class="dropmenu">
           <el-dropdown>
@@ -74,13 +76,19 @@
 export default {
   props: {},
   data () {
-    return {}
+    return {
+      isCollapse: false
+    }
   },
   computed: {},
   created () {},
   mounted () {},
   watch: {},
-  methods: {},
+  methods: {
+    roll () {
+      this.isCollapse = !this.isCollapse
+    }
+  },
   components: {}
 }
 </script>
@@ -99,6 +107,10 @@ export default {
       width: 100%;
       background: #002244 url(../../assets/images/logo_admin.png) no-repeat
         center / 140px auto;
+    }
+    .minilogo {
+      background-image: url(../../assets/images/logo_admin_01.png) no-repeat center;
+      background-size: 36px auto;
     }
     .el-menu-vertical-demo {
       border: none;
