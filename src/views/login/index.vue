@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import Store from '@/store'
 export default {
 
   data () {
@@ -45,8 +46,8 @@ export default {
     // }
     return {
       loginForm: {
-        mobile: '',
-        code: ''
+        mobile: '15079804860',
+        code: '246810'
       },
       //   表单校验规则的对象
       loginRules: {
@@ -81,13 +82,19 @@ export default {
   methods: {
     login () {
       // 调用validate对整体进行校验
-      // console.log(this.$message)
+      // console.log(this.$refs)
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           // 校验成功 调用登录接口
-          this.$http.post('http://ttapi.research.itcast.cn/mp/v1_0/authorizations', this.loginForm)
+          this.$http.post('authorizations', this.loginForm)
             .then((res) => {
-              this.$router.push('/hm')
+              console.log(res)
+              // return
+              // 调用store中的set方法在sessionstroge中保存token
+              // 后面根据这个token在做访问限制 若没有强制跳转登录页面
+              // 在路由跳转之前做判是否带着这个token 所有用到路由进阶功能 :路由守卫
+              Store.setUser(res.data.data)
+              this.$router.push('/wc')
             })
             .catch(() => {
               this.$message.error('手机或是验证码出错')

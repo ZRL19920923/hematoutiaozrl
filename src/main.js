@@ -8,7 +8,7 @@ import ElementUI from 'element-ui'
 // 引入element-ui css样式
 import 'element-ui/lib/theme-chalk/index.css'
 // 引入axios
-import axios from 'axios'
+import axios from '@/api'
 // 简单配置axios 配置成vue的原型方法
 Vue.prototype.$http = axios
 
