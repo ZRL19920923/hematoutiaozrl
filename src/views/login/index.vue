@@ -1,26 +1,28 @@
 <template>
-    <div class="container">
-        <el-card class="mycard">
-            <img src="../../assets/images/logo_index.png" alt="">
-            <el-form ref="loginForm" :model="loginForm" :rules='loginRules'>
-                <el-form-item prop="mobile">
-                    <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
-                </el-form-item>
-                <el-form-item prop="code">
-                    <el-input v-model="loginForm.code" placeholder="请输入6位数验证码" style="width:236px;margin-right:10px;" ></el-input>
-                    <el-button type="success">获取验证码</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-checkbox :value="true">我已阅读并同意用户协议和隐私条款</el-checkbox>
-                </el-form-item>
-                <el-form-item>
-                    <el-button @click="login()" type="primary" style="width:100%">登 录</el-button>
-                </el-form-item>
-
-            </el-form>
-        </el-card>
-
-    </div>
+  <div class="container">
+    <el-card class="mycard">
+      <img src="../../assets/images/logo_index.png" alt />
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
+        <el-form-item prop="mobile">
+          <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
+        </el-form-item>
+        <el-form-item prop="code">
+          <el-input
+            v-model="loginForm.code"
+            placeholder="请输入6位数验证码"
+            style="width:236px;margin-right:10px;"
+          ></el-input>
+          <el-button type="success">获取验证码</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-checkbox :value="true">我已阅读并同意用户协议和隐私条款</el-checkbox>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="login()" type="primary" style="width:100%">登 录</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+  </div>
 </template>
 
 <script>
@@ -83,22 +85,32 @@ export default {
     login () {
       // 调用validate对整体进行校验
       // console.log(this.$refs)
-      this.$refs.loginForm.validate((valid) => {
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
           // 校验成功 调用登录接口
-          this.$http.post('authorizations', this.loginForm)
-            .then((res) => {
-              console.log(res)
-              // return
-              // 调用store中的set方法在sessionstroge中保存token
-              // 后面根据这个token在做访问限制 若没有强制跳转登录页面
-              // 在路由跳转之前做判是否带着这个token 所有用到路由进阶功能 :路由守卫
-              Store.setUser(res.data.data)
-              this.$router.push('/wc')
-            })
-            .catch(() => {
-              this.$message.error('手机或是验证码出错')
-            })
+          // this.$http.post('authorizations', this.loginForm)
+          // .then((res) => {
+          //   // console.log(res)
+          //   // return
+          //   // 调用store中的set方法在sessionstroge中保存token
+          //   // 后面根据这个token在做访问限制 若没有强制跳转登录页面
+          //   // 在路由跳转之前做判断是否带着这个token 所有在路由页用到路由进阶功能 :路由守卫
+          //   Store.setUser(res.data.data)
+          //   this.$router.push('/wc')
+          // })
+          // .catch(() => {
+          //   this.$message.error('手机或是验证码出错')
+          // })
+          // 用async和await代替promise .then .catch语法
+          // {data:{data}} 解构赋值语法
+          // 用try{}catch(e){}  js基础语法去捕获错误
+          try {
+            const { data: { data } } = await this.$http.post('authorizations', this.loginForm)
+            Store.setUser(data)
+            this.$router.push('/wc')
+          } catch (error) {
+            this.$message.error('手机号或验证码错误')
+          }
         }
       })
     }
@@ -111,30 +123,30 @@ export default {
 
 <style scoped lang="less">
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 .container {
-    width:100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: url(../../assets/images/login_bg.jpg) no-repeat center / cover;
+  .mycard {
+    height: 350px;
+    width: 400px;
+    // background-color: hotpink;
     position: absolute;
+    margin: auto;
     left: 0;
     top: 0;
-    background: url(../../assets/images/login_bg.jpg) no-repeat center / cover;
-    .mycard {
-        height: 350px;
-        width: 400px;
-        // background-color: hotpink;
-        position: absolute;
-        margin: auto;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        img {
-            display: block;
-            margin: 0 auto;
-        }
+    bottom: 0;
+    right: 0;
+    img {
+      display: block;
+      margin: 0 auto;
     }
+  }
 }
 </style>

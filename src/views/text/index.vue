@@ -1,6 +1,6 @@
 <template>
-    <div style="text-align:center;">
-        <img src="../../assets/images/welcome.jpg" alt="">
+    <div>
+        text
     </div>
 </template>
 
@@ -18,12 +18,12 @@ export default {
 
   },
   created () {
-    this.$http.get('articles')
+    this.$http.get('http://127.0.0.1:4000/b')
       .then(res => {
-        // console.log(res.data)
+        console.log(res)
       })
-      .catch((err) => {
-        console.log(err)
+      .catch(() => {
+
       })
   },
   mounted () {
@@ -42,7 +42,5 @@ export default {
 </script>
 
 <style scoped lang="less">
-    img {
-      text-align: center;
-    }
+
 </style>

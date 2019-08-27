@@ -10,6 +10,8 @@ import Welcome from '@/views/welcome'
 import Notfound from '@/views/404'
 // 引入获取token的方法
 import Store from '@/store'
+// 引入await测试页面
+import Text from '@/views/text'
 // 注册路由
 Vue.use(VueRouter)
 
@@ -20,6 +22,7 @@ const router = new VueRouter({
     // name 的作用是给path命别名
     // 跳转更方便一些 ;$router.push('/lg') 或者$router.push({name:'Login'})
     { path: '/lg', name: 'login', component: Login },
+    { path: '/tx', name: 'text', component: Text },
     { path: '/',
       component: Home,
       children: [
