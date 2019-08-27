@@ -48,17 +48,20 @@
         <span class="el-icon-s-fold icon" @click="roll()"></span>
         <span class="test">江苏传智播客科技教育有限公司</span>
         <div class="dropmenu">
-          <el-dropdown>
+          <el-dropdown @command="clickItem">
             <span class="el-dropdown-link">
+              <!-- 头像和后台传递的数据来更新 所以在data内声明 -->
               <span class="avatar">
-                <img src="../../assets/images/avatar.jpg" alt />
+                <img :src="photo" alt />
               </span>
-              <span class="name">用户名称</span>
+              <!-- 名字和后台传递的数据来更新  所以在data内声明-->
+              <span class="name">{{name}}</span>
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-setting">个人设置</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-unlock">退出登录</el-dropdown-item>
+              <!--  -->
+              <el-dropdown-item icon="el-icon-setting" command="setting">个人设置</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-unlock" command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -71,21 +74,54 @@
 </template>
 
 <script>
+import Store from '@/store'
 export default {
   props: {},
   data () {
     return {
-      isCollapse: false
+      isCollapse: false,
+      name: '',
+      photo: ''
     }
   },
   computed: {},
-  created () {},
+  created () {
+    // 获取用户信息 所以导入store模块
+    const user = Store.getUser()
+    this.name = user.name
+    this.photo = user.photo
+  },
   mounted () {},
   watch: {},
   methods: {
     roll () {
       this.isCollapse = !this.isCollapse
+    },
+
+    setting () {
+      this.$router.push('/setting')
+    },
+    logout () {
+      Store.delUser()
+      this.$router.push('/lg')
+    },
+    // 用element自带的事件触发事件来解决
+    clickItem (command) {
+      // this[comand]原生调用方法事件括号内是个变量
+      this[command]()
     }
+
+    // 原生解决
+    // setting () {
+    //   // 因为element 组件内部不支持原生点击事件 所以加语法@click.native 才能正常触发原生点击事件
+    //   // 触发个人设置点击事件跳转到setting页面
+    //   this.$router.push('/setting')
+    // },
+    // logout () {
+    //   // 触发退出登录事件 跳转登录页面 并删除用户信息
+    //   Store.delUser()
+    //   this.$router.push('/lg')
+    // }
   },
   components: {}
 }
