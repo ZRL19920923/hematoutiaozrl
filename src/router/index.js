@@ -8,10 +8,12 @@ import Home from '@/views/home'
 import Welcome from '@/views/welcome'
 // 引入404页面
 import Notfound from '@/views/404'
+// 引入article模块
+import Article from '@/views/article'
 // 引入获取token的方法
 import Store from '@/store'
 // 引入await测试页面
-import Text from '@/views/text'
+// import Text from '@/views/text'
 // 注册路由
 Vue.use(VueRouter)
 
@@ -22,12 +24,12 @@ const router = new VueRouter({
     // name 的作用是给path命别名
     // 跳转更方便一些 ;$router.push('/lg') 或者$router.push({name:'Login'})
     { path: '/lg', name: 'login', component: Login },
-    { path: '/tx', name: 'text', component: Text },
+    // { path: '/tx', name: 'text', component: Text },
     { path: '/',
       component: Home,
       children: [
-        { path: '/wc', name: 'welcome', component: Welcome }
-        // { path: '/hm/article', name: 'article', component: Article },
+        { path: '/', name: 'welcome', component: Welcome },
+        { path: '/article', name: 'article', component: Article }
         // { path: '/hm/image', name: 'image', component: Image },
         // { path: '/hm/publish', name: 'publish', component: Publish },
         // { path: '/hm/comment', name: 'acomment', component: Comment },
