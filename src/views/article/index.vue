@@ -17,14 +17,8 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道:">
-          <el-select v-model="reqParams.channel_id" placeholder="请选择">
-            <el-option
-              v-for="item in channelOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+          <!-- 此处放频道组件 -->
+          <my-channel v-model="reqParams.channel_id"></my-channel>
         </el-form-item>
         <el-form-item label="日期: ">
           <el-date-picker
@@ -33,29 +27,72 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            @change="changeDate"
+            format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">筛选</el-button>
+          <el-button type="primary" @click="search()">筛选</el-button>
         </el-form-item>
       </el-form>
     </el-card>
     <el-card class="box-card">
       <div slot="header">
-        <span>根据筛选条件共查询到 0 条结果</span>
+        <span>根据筛选条件共查询到 {{total}} 条结果</span>
       </div>
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="date" label="日期" width="180"></el-table-column>
-        <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-        <el-table-column prop="address" label="地址"></el-table-column>
+        <el-table-column prop="date" label="封面">
+          <template slot-scope="scope">
+            <div class="block">
+              <el-image :src="scope.row.cover.images[0]" style="width: 100px; height: 100px">
+                <div slot="error" class="image-slot">
+                  <img src="../../assets/images/error.gif" alt style="width: 100px; height: 100px" />
+                </div>
+              </el-image>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="title" label="标题"></el-table-column>
+        <el-table-column label="状态">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.status === 0" type="info">草稿</el-tag>
+            <el-tag v-if="scope.row.status === 1">待审核</el-tag>
+            <el-tag v-if="scope.row.status === 2" type="success">审核通过</el-tag>
+            <el-tag v-if="scope.row.status === 3" type="warning">审核失败</el-tag>
+            <el-tag v-if="scope.row.status === 4" type="danger">已删除</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="pubdate" label="发布时间">
+          <!-- <template slot-scope="scope">
+
+          </template>-->
+        </el-table-column>
+        <el-table-column prop="address" label="操作" style="width: 120px;">
+          <template slot-scope="scope">
+            <el-button type="primary" icon="el-icon-edit" circle plain to="/publish"></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              plain
+              @click="deleteArticle(scope.row.id)"
+            ></el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
-    <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="this.reqParams.per_page"
+      :current-page="this.reqParams.page"
+      @current-change="changePage"
+    ></el-pagination>
   </div>
 </template>
 
 <script>
-// import myBread from '@/components/my-bread'
 export default {
   props: {},
   data () {
@@ -67,39 +104,64 @@ export default {
         channel_id: null,
         // 获取时间的开始和结束传递给后端
         begin_pubdata: null,
-        end_pubdate: null
+        end_pubdate: null,
+        per_page: 20,
+        page: 1
       },
-      channelOptions: [{ id: 100, name: 'php' }],
       dateArr: [],
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ]
+      tableData: [],
+      total: 0
     }
   },
   computed: {},
-  created () {},
+  created () {
+    // this.getChannelOptions()
+    this.getArticle()
+  },
   mounted () {},
   watch: {},
-  methods: {},
+  methods: {
+    search () {
+      this.reqParams.page = 1
+      this.getArticle()
+    },
+    changeDate (valueArr) {
+      if (valueArr) {
+        this.reqParams.begin_pubdata = valueArr[0]
+        this.reqParams.end_pubdata = valueArr[1]
+      } else {
+        this.reqParams.begin_pubdata = null
+        this.reqParams.end_pubdata = null
+      }
+    },
+    changePage (newPage) {
+      this.reqParams.page = newPage
+      this.getArticle()
+    },
+    async getArticle () {
+      const {
+        data: { data }
+      } = await this.$http.get('articles', { params: this.reqParams })
+      // console.log(data)
+      this.tableData = data.results
+      this.total = data.total_count
+    },
+    deleteArticle (id) {
+      // 危险操作先借用组件自带的confirm功能
+      this.$confirm('确认删除此文章吗', '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        await this.$http.DELETE(`articles/${id}`)
+        this.$message.success('删除成功')
+        this.getArticle()
+      }).catch(() => {
+
+      })
+    }
+
+  },
   components: {}
 }
 </script>
@@ -108,7 +170,7 @@ export default {
 .find {
   margin-bottom: 15px;
 }
-.el-pagination{
+.el-pagination {
   text-align: center;
 }
 </style>

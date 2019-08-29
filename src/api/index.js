@@ -2,8 +2,19 @@
 import axios from 'axios'
 import Store from '@/store'
 import router from '@/router'
+import JSONBIG from 'json-bigint'
 // 1.基准地址
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+// 配置转换响应的数据 默认是用JSON.parse() 但是这个方法再2的53次方后将失效 导致数据不准 所以这里加载新的模块JSON-BIGINt
+axios.defaults.transformResponse = [(data) => {
+  // data 原始数据
+  // 因为有的响应没有响应数据 用JSONBIG.parse 去值转换一个null系统会报错 所有用try去测试 有数据则转换数据 无数据则直接走catch 返回数据
+  try {
+    return JSONBIG.parse(data)
+  } catch (e) {
+    return data
+  }
+}]
 // 2.请求头 token 以后发请求都带着这个头
 
 axios.defaults.headers.AUthorization = `Bearer ${Store.getUser().token}`
