@@ -7,6 +7,8 @@ import router from '@/router'
 import ElementUI from 'element-ui'
 // 引入element-ui css样式
 import 'element-ui/lib/theme-chalk/index.css'
+// 导入公共样式
+import '@/styles/index.less'
 // 引入面包屑插件
 import MyPlugin from '@/components'
 // 引入axios

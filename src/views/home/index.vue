@@ -168,6 +168,10 @@ export default {
         font-weight: bold;
       }
       .avatar {
+        width: 30px;
+        height: 30px;
+        // vertical-align: middle;
+        display: inline-block;
         img {
           width: 30px;
           height: 30px;
