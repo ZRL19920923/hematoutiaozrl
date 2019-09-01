@@ -75,7 +75,6 @@ export default {
         content: null,
         channel_id: null,
         title: null
-
       },
       confirmUrl: null,
       articleId: null
@@ -89,16 +88,49 @@ export default {
     }
   },
   mounted () {},
-  watch: {},
+  // 问题当从修改文章点击进去的时候 在点击侧边栏中的发布文章 页面不更新
+  // 解决方法 添加侦听器 watch  它可以监听vue实例中所有的数据变化 包括 $route.query.id
+  watch: {
+    // 此处不能用箭头函数 因为有this指向问题 监听函数有另两个参数 newVal , oldVal
+    '$route.query.id': function (newVal, oldVal) {
+      // 此处重置表单数据 重新响应页面 不能直接让表单数据等于null或空''  因为取里面的对象数据会报错
+      // 若有不正常用户选择回退 则可以另当处理
+      if (newVal) {
+        // 判断业务articleId 存在修改  不存在 发表
+        this.articleId = this.$route.query.id
+        if (this.articleId) {
+          // 获取数据 填充表单
+          this.getArticle()
+        }
+        return false
+      }
+      this.articleForm = {
+        cover: {
+          type: 1,
+          images: []
+        },
+        content: null,
+        channel_id: null,
+        title: null
+      }
+      // 清空页面id
+      this.articleId = null
+    }
+  },
   methods: {
     async update (draft) {
-      await this.$http.put(`articles/${this.articleId}?draft=${draft}`, this.articleForm)
+      await this.$http.put(
+        `articles/${this.articleId}?draft=${draft}`,
+        this.articleForm
+      )
       // 提示信息
       this.$message.success(draft ? '存入草稿成功' : '修改成功')
       this.$router.push('/article')
     },
     async getArticle () {
-      const { data: { data } } = await this.$http.get('articles/' + this.articleId)
+      const {
+        data: { data }
+      } = await this.$http.get('articles/' + this.articleId)
       this.articleForm = data
     },
     async submit (draft) {
