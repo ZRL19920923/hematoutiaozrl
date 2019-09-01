@@ -1,7 +1,4 @@
-// 去覆盖其他组件的内部样式
-
-// 公用的样式
-.avatar-uploader{
+.avatar-uploader {
   text-align: center;
 }
 .avatar-uploader .el-upload {
@@ -27,9 +24,9 @@
   height: 178px;
   display: block;
 }
-.article-container .ql-editor{
+.article-container .ql-editor {
   height: 300px;
 }
-.article-container .ql-toolbar.ql-snow{
+.article-container .ql-toolbar.ql-snow {
   padding: 0 8px;
 }

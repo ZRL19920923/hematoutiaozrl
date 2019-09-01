@@ -11,6 +11,7 @@ import Notfound from '@/views/404'
 // 引入article模块
 import Article from '@/views/article'
 import Image from '@/views/image'
+import Publish from '@/views/publish'
 // 引入获取token的方法
 import Store from '@/store'
 // 引入await测试页面
@@ -31,7 +32,8 @@ const router = new VueRouter({
       children: [
         { path: '/', name: 'welcome', component: Welcome },
         { path: '/article', name: 'article', component: Article },
-        { path: '/image', name: 'image', component: Image }
+        { path: '/image', name: 'image', component: Image },
+        { path: '/publish', name: 'publish', component: Publish }
         // { path: '/hm/image', name: 'image', component: Image },
         // { path: '/hm/publish', name: 'publish', component: Publish },
         // { path: '/hm/comment', name: 'acomment', component: Comment },

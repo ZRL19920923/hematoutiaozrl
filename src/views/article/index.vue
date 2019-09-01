@@ -69,7 +69,7 @@
         </el-table-column>
         <el-table-column prop="address" label="操作" style="width: 120px;">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" circle plain to="/publish"></el-button>
+            <el-button type="primary" icon="el-icon-edit" circle plain @click="$router.push('/publish?id='+scope.row.id)"></el-button>
             <el-button
               type="danger"
               icon="el-icon-delete"
