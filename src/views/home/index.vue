@@ -73,6 +73,7 @@
 
 <script>
 import Store from '@/store'
+import eventBus from '@/eventBus'
 export default {
   props: {},
   data () {
@@ -88,6 +89,14 @@ export default {
     const user = Store.getUser()
     this.name = user.name
     this.photo = user.photo
+    // 接受usersetting index中通过eventBus传来的数据
+    eventBus.$on('updateName', (name) => {
+      this.name = name
+    })
+    // 接受usersetting index中通过eventBus传来的数据
+    eventBus.$on('updatePhoto', (photo) => {
+      this.photo = photo
+    })
   },
   mounted () {},
   watch: {},
